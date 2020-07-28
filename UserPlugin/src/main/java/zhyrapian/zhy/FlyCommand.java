@@ -3,7 +3,6 @@ package zhyrapian.zhy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,29 +10,51 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Objects;
 
 public class FlyCommand implements CommandExecutor {
 
-    String error = "Try /mod [Subcommand]";
+    String error =  ChatColor.DARK_BLUE +
+                    "-----------------------------------------------------" + '\n' + ChatColor.BLUE +
+                    "[MOD] " + ChatColor.WHITE + "Bedoel je een van de onderstaande commands?" + '\n' + ChatColor.DARK_BLUE +
+                    "-----------------------------------------------------" + '\n' + ChatColor.GOLD +
+                    "/mod fly - " + ChatColor.WHITE + "Hiermee kan je jezelf of een andere speler fly geven" + '\n' + ChatColor.GOLD +
+                    "/mod spawn [speler] - " + ChatColor.WHITE + "Hiermee kan je jezelf of een andere speler naar spawn sturen";
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (sender instanceof Player) {
             if (args.length == 0){
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&l&6" + error));
+                sender.sendMessage(error);
             }
-            else if (args[0].equals("fly")) {
+            else if (args.length == 1 && args[0].equalsIgnoreCase("fly")) {
                 Player p = (Player) sender;
                 if (p.getAllowFlight() == true) {
                     p.setAllowFlight(false);
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD]  Je bent uit de lucht geschoten!"));
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &cJe bent uit de lucht geschoten!"));
                     //Speler krijgt nausea
                     p.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 200, 1, true));
                 } else {
                     p.setAllowFlight(true);
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD]  Vlieg als een echte vogel!!"));
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &2Vlieg als een echte vogel!!"));
+                }
+            }
+            else if (args.length == 2 && args[0].equalsIgnoreCase("fly")){
+                Player target = Bukkit.getServer().getPlayer(args[1]);
+                if (target == null){
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&l&9[MOD] &cSpeler &l" + args[1] + " &r&cis niet gevonden!"));
+                    return true;
+                }
+                else {
+                    if (target.getAllowFlight() == true) {
+                        target.setAllowFlight(false);
+                        target.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &cJe bent uit de lucht geschoten!"));
+                        //Speler krijgt nausea
+                        target.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 200, 1, true));
+                    } else {
+                        target.setAllowFlight(true);
+                        target.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &2Vlieg als een echte vogel!!"));
+                    }
                 }
             }
             //Spawnsend commando.
@@ -52,7 +73,7 @@ public class FlyCommand implements CommandExecutor {
             else if (args.length == 2 && args[0].equalsIgnoreCase("spawn")){
             Player target = Bukkit.getServer().getPlayer(args[1]);
                 if (target == null) {
-                    sender.sendMessage(ChatColor.RED + "Speler " + args[1] + " is niet gevonden!");
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&l&9[MOD] &cSpeler &l" + args[1] + " &r&cis niet gevonden!"));
                     return true;
                 }
                 Location Spawnlocation = target.getBedSpawnLocation();

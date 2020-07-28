@@ -6,4 +6,4 @@ authors: [Zhyrapian]
 description: Dit is een userplugin!
 commands:
   mod:
-    aliases: [m]
+    aliases: [m, M]
