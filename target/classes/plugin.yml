@@ -1,0 +1,9 @@
+name: UserPlugin
+version: 1.0-SNAPSHOT
+main: zhyrapian.zhy.UserPlugin
+api-version: 1.13
+authors: [Zhyrapian]
+description: Dit is een userplugin!
+commands:
+  mod:
+    aliases: [m]
