@@ -2,6 +2,7 @@ package zhyrapian.zhy;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -24,9 +25,11 @@ public class FlyCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (sender instanceof Player) {
+            //geen subcommando
             if (args.length == 0){
                 sender.sendMessage(error);
             }
+            //Jezelf fly geven
             else if (args.length == 1 && args[0].equalsIgnoreCase("fly")) {
                 Player p = (Player) sender;
                 if (p.getAllowFlight() == true) {
@@ -39,10 +42,11 @@ public class FlyCommand implements CommandExecutor {
                     p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &2Vlieg als een echte vogel!!"));
                 }
             }
+            //Iemand anders fly geven
             else if (args.length == 2 && args[0].equalsIgnoreCase("fly")){
                 Player target = Bukkit.getServer().getPlayer(args[1]);
                 if (target == null){
-                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&l&9[MOD] &cSpeler &l" + args[1] + " &r&cis niet gevonden!"));
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&l&9[MOD] &eSpeler &l&6" + args[1] + " &r&eis niet gevonden!"));
                     return true;
                 }
                 else {
@@ -81,8 +85,21 @@ public class FlyCommand implements CommandExecutor {
                 target.sendMessage(ChatColor.translateAlternateColorCodes('&',"&l&9[MOD] &l&dJe bent naar je spawnlocatie gestuurd!"));
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&l&9[MOD] &l&e" + target.getName() + " is naar zijn spawnlocatie gestuurd!"));
             }
-            //Iemand anders fly gevenPlayer p = (Player) sender;
-            //else if (args.length == 1 && args[1].contains(Player));
+            //Jezelf in spectator modus of survival zetten.
+            else if (args.length == 1 && args[0].equalsIgnoreCase("spectator")){
+                Player p = (Player) sender;
+                if (p.getGameMode().equals(GameMode.SPECTATOR)){
+                    //Je gamemode is spectator, dus je wordt naar gamemode survival gezet.
+                    p.setGameMode(GameMode.SURVIVAL);
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&',"&l&9[MOD] &l&dSpectator modus gedeactiveerd!"));
+                }else {
+                    //Je gamemode is survival, dus je wordt naar gamemode spectator gezet.
+                    p.setGameMode(GameMode.SPECTATOR);
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&',"&l&9[MOD] &l&dSpectator modus geactiveerd!"));
+                    return true;
+                }
+            }
+            //}
         }else {
             //Commando wordt uitgevoerd door de console.
             System.out.println("&l&9[MOD] Er is een commando uitgevoerd door de console, dit is niet mogelijk.");
