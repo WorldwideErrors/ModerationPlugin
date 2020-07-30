@@ -98,6 +98,7 @@ public class FlyCommand implements CommandExecutor {
                     p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &cJe bent uit de lucht geschoten!"));
                     //Speler krijgt nausea
                     p.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 200, 1, true));
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 500, 1, true));
                 } else {
                     p.setAllowFlight(true);
                     p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &2Vlieg als een echte vogel!!"));
@@ -159,6 +160,9 @@ public class FlyCommand implements CommandExecutor {
                     p.sendMessage(ChatColor.translateAlternateColorCodes('&',"&l&9[MOD] &l&dSpectator modus geactiveerd!"));
                     return true;
                 }
+            }
+            else {
+                sender.sendMessage(error);
             }
             //}
         }else {

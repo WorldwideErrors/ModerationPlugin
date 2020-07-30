@@ -13,6 +13,8 @@ public final class UserPlugin extends JavaPlugin {
         getLogger().info(ChatColor.GREEN + "The Userplugin is enabled");
         getCommand("mod").setExecutor(new FlyCommand());
         getServer().getPluginManager().registerEvents(new ClickEvent(),this);
+        CustomItemRecipes itemRecipes = new CustomItemRecipes();
+        itemRecipes.customRecipe();
     }
 
     @Override
