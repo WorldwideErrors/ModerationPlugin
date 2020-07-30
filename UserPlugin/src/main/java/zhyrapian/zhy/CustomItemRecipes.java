@@ -15,9 +15,11 @@ import java.util.ArrayList;
 public class CustomItemRecipes implements Listener {
     public Plugin plugin = UserPlugin.getPlugin(UserPlugin.class);
     public void customRecipe(){
+        //Emerald Chestplate
         ItemStack EmeraldChest = new ItemStack(Material.IRON_CHESTPLATE, 1);
         ItemMeta EmeraldChest_Meta = EmeraldChest.getItemMeta();
 
+        //Custom Item maken
         EmeraldChest_Meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',"&2E&amerald &2C&ahestplate"));
         ArrayList<String> EmeraldChest_lore = new ArrayList<String>();
         EmeraldChest_lore.add(ChatColor.translateAlternateColorCodes('&',"&e&o'A chestplate made for real warriors.'"));
@@ -26,6 +28,8 @@ public class CustomItemRecipes implements Listener {
         EmeraldChest_Meta.setUnbreakable(true);
         EmeraldChest_Meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         EmeraldChest.setItemMeta(EmeraldChest_Meta);
+
+        //Aanmaken van het Recipe van Emerald Chestplate
         ShapedRecipe EmeraldChest_Recipe = new ShapedRecipe(EmeraldChest);
         EmeraldChest_Recipe.shape("E E", "EEE", "EEE");
         EmeraldChest_Recipe.setIngredient('E', Material.EMERALD_BLOCK);

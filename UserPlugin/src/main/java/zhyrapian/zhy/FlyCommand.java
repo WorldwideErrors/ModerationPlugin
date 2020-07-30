@@ -34,14 +34,17 @@ public class FlyCommand implements CommandExecutor {
                 Player p = (Player) sender;
 
                 p.sendMessage(ChatColor.translateAlternateColorCodes('&',"&l&9[MOD] &eBezig met het openen van de Moderation GUI..."));
-                Inventory gui = Bukkit.createInventory(p, 36, ChatColor.BLUE + "Moderation GUI");
+                Inventory gui = Bukkit.createInventory(p, 54, ChatColor.BLUE + "Moderation GUI");
 
                 ItemStack suicide = new ItemStack(Material.RED_STAINED_GLASS_PANE);
                 ItemStack air = new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE);
                 ItemStack underline = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
                 ItemStack fly = new ItemStack(Material.FEATHER);
                 ItemStack spawn = new ItemStack(Material.PINK_BED);
-                ItemStack spectator = new ItemStack(Material.PLAYER_HEAD,1,(byte) 3);
+                ItemStack spectator = new ItemStack(Material.SNOWBALL);
+                ItemStack vision = new ItemStack(Material.GLOWSTONE_DUST);
+                ItemStack team = new ItemStack(Material.WHITE_WOOL);
+                ItemStack playerdata = new ItemStack(Material.PLAYER_HEAD,1,(byte) 3);
 
                 ItemMeta suicide_meta = suicide.getItemMeta();
                 suicide_meta.setDisplayName(ChatColor.RED + "Close");
@@ -72,17 +75,43 @@ public class FlyCommand implements CommandExecutor {
                 spawn_meta.setLore(spawn_lore);
                 spawn.setItemMeta(spawn_meta);
 
-                SkullMeta spectator_meta = (SkullMeta) Bukkit.getItemFactory().getItemMeta(Material.PLAYER_HEAD);
-                spectator_meta.setOwningPlayer(p.getPlayer());
+                ItemMeta spectator_meta = spectator.getItemMeta();
                 spectator_meta.setDisplayName(ChatColor.GOLD + "Spectator Modus");
                 ArrayList<String> spectator_lore = new ArrayList<>();
                 spectator_lore.add(ChatColor.WHITE + "Ga in spectator modus");
                 spectator_meta.setLore(spectator_lore);
                 spectator.setItemMeta(spectator_meta);
 
+                ItemMeta vision_meta = vision.getItemMeta();
+                vision_meta.setDisplayName(ChatColor.GOLD + "Nightvision");
+                ArrayList<String> vision_lore = new ArrayList<>();
+                vision_lore.add(ChatColor.WHITE + "Ga in nightvision modus");
+                vision_meta.setLore(vision_lore);
+                vision.setItemMeta(vision_meta);
+
+                ItemMeta team_meta = team.getItemMeta();
+                vision_meta.setDisplayName(ChatColor.GOLD + "Team");
+                ArrayList<String> team_lore = new ArrayList<>();
+                team_lore.add(ChatColor.WHITE + "Kies in welk team jij wil");
+                team_meta.setLore(team_lore);
+                team.setItemMeta(team_meta);
+
+                SkullMeta playerdata_meta = (SkullMeta) Bukkit.getItemFactory().getItemMeta(Material.PLAYER_HEAD);
+                playerdata_meta.setOwningPlayer(p.getPlayer());
+                playerdata_meta.setDisplayName(ChatColor.GOLD + p.getPlayerListName());
+                ArrayList<String> playerdata_lore = new ArrayList<>();
+                playerdata_lore.add(ChatColor.YELLOW + "Level: " + ChatColor.WHITE + " " + p.getLevel());
+                playerdata_lore.add(" ");
+                playerdata_lore.add(ChatColor.YELLOW + "Health: " + ChatColor.WHITE + " " + p.getHealth());
+                playerdata_lore.add(ChatColor.YELLOW + "Food: " + ChatColor.WHITE + " " + p.getFoodLevel());
+                playerdata_meta.setLore(playerdata_lore);
+                playerdata.setItemMeta(playerdata_meta);
+
                 ItemStack[] menu_items = {
                         air, air, air, air, air, air, air, air, air,
                         air, fly, air, air, spawn, air, air, spectator, air,
+                        air, air, air, air, air, air, air, air, air,
+                        air, vision, air, air, team, air, air, playerdata, air,
                         air, air, air, air, air, air, air, air, air,
                         underline, underline, underline, underline, suicide, underline, underline, underline, underline,
                 };
@@ -93,15 +122,20 @@ public class FlyCommand implements CommandExecutor {
             //Jezelf fly geven
             else if (args.length == 1 && args[0].equalsIgnoreCase("fly")) {
                 Player p = (Player) sender;
-                if (p.getAllowFlight() == true) {
+                if (p.getAllowFlight() == true && p.getGameMode().equals(GameMode.SURVIVAL)) {
                     p.setAllowFlight(false);
                     p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &cJe bent uit de lucht geschoten!"));
                     //Speler krijgt nausea
                     p.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 200, 1, true));
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 500, 1, true));
-                } else {
+                }else if (p.getAllowFlight() == false && p.getGameMode().equals(GameMode.SURVIVAL)){
                     p.setAllowFlight(true);
                     p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &2Vlieg als een echte vogel!!"));
+                    ItemStack fly = new ItemStack(Material.LEATHER);
+                }
+                else {
+                    p.setAllowFlight(true);
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &cJe kan niet uit fly worden gehaald in gamemode Spectator!!"));
+
                 }
             }
             //Iemand anders fly geven
@@ -112,14 +146,20 @@ public class FlyCommand implements CommandExecutor {
                     return true;
                 }
                 else {
-                    if (target.getAllowFlight() == true) {
+                    if (target.getAllowFlight() == true && target.getGameMode().equals(GameMode.SURVIVAL)) {
                         target.setAllowFlight(false);
-                        target.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &cJe bent uit de lucht geschoten!"));
+                        target.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &dJe bent uit de lucht geschoten!"));
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&l&9[MOD] &l&e" + target.getName() + " is uit flymodus gehaald!"));
                         //Speler krijgt nausea
                         target.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 200, 1, true));
-                    } else {
+                    } else if (target.getAllowFlight() == false && target.getGameMode().equals(GameMode.SURVIVAL)){
                         target.setAllowFlight(true);
-                        target.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &2Vlieg als een echte vogel!!"));
+                        target.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &dVlieg als een echte vogel!!"));
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&l&9[MOD] &l&e" + target.getName() + " is in flymodus gezet.!"));
+                    }else {
+                        target.setAllowFlight(true);
+                        target.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &cJe kan niet uit fly worden gehaald in gamemode Spectator!"));
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&l&9[MOD] &c" + target.getName() + " kon niet uit flymodus gehaald worden!"));
                     }
                 }
             }

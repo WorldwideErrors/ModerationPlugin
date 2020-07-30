@@ -36,15 +36,19 @@ public class ClickEvent implements Listener {
                     break;
                 case FEATHER:
                     p.closeInventory();
-                    if (p.getAllowFlight() == true) {
+                    if (p.getAllowFlight() == true && p.getGameMode().equals(GameMode.SURVIVAL)) {
                         p.setAllowFlight(false);
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &cJe bent uit de lucht geschoten!"));
                         //Speler krijgt nausea
                         p.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 200, 1, true));
-                    } else {
+                    }else if (p.getAllowFlight() == false && p.getGameMode().equals(GameMode.SURVIVAL)){
                         p.setAllowFlight(true);
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &2Vlieg als een echte vogel!!"));
                         ItemStack fly = new ItemStack(Material.LEATHER);
+                    }
+                    else {
+                        p.setAllowFlight(true);
+                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &cJe kan niet uit fly worden gehaald in gamemode Spectator!!"));
                     }
 
                     break;
@@ -53,17 +57,29 @@ public class ClickEvent implements Listener {
                     p.sendMessage(ChatColor.translateAlternateColorCodes('&',"&l&9[MOD] &dBezig met het sluiten van de Moderation GUI..."));
                     break;
 
-                case PLAYER_HEAD:
+                case SNOWBALL:
                     if (p.getGameMode().equals(GameMode.SPECTATOR)) {
                         //Je gamemode is spectator, dus je wordt naar gamemode survival gezet.
+                        p.closeInventory();
                         p.setGameMode(GameMode.SURVIVAL);
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &l&dSpectator modus gedeactiveerd!"));
                     } else {
                         //Je gamemode is survival, dus je wordt naar gamemode spectator gezet.
+                        p.closeInventory();
                         p.setGameMode(GameMode.SPECTATOR);
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &l&dSpectator modus geactiveerd!"));
-
-                        break;
+                    }
+                    break;
+                case GLOWSTONE_DUST:
+                    p.getActivePotionEffects();
+                    if (p.hasPotionEffect(PotionEffectType.NIGHT_VISION)){
+                        p.closeInventory();
+                        p.removePotionEffect(PotionEffectType.NIGHT_VISION);
+                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &l&dNightvision gedeactiveerd!"));
+                    }else {
+                        p.closeInventory();
+                        p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION,1000000000,0));
+                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &l&dNightvision geactiveerd!"));
                     }
             }
         }
