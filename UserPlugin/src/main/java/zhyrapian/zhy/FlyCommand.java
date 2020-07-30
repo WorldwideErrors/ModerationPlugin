@@ -10,10 +10,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 
 public class FlyCommand implements CommandExecutor {
@@ -24,6 +26,8 @@ public class FlyCommand implements CommandExecutor {
                     "-----------------------------------------------------" + '\n' + ChatColor.GOLD +
                     "/mod fly - " + ChatColor.WHITE + "Hiermee kan je jezelf of een andere speler fly geven" + '\n' + ChatColor.GOLD +
                     "/mod spawn [speler] - " + ChatColor.WHITE + "Hiermee kan je jezelf of een andere speler naar spawn sturen";
+
+
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -45,6 +49,13 @@ public class FlyCommand implements CommandExecutor {
                 ItemStack vision = new ItemStack(Material.GLOWSTONE_DUST);
                 ItemStack team = new ItemStack(Material.WHITE_WOOL);
                 ItemStack playerdata = new ItemStack(Material.PLAYER_HEAD,1,(byte) 3);
+
+                if (p.getAllowFlight() == true){
+                    fly.setType(Material.GRASS_BLOCK);
+
+                }else if (p.getAllowFlight() == false){
+                    fly.setType(Material.FEATHER);
+                }
 
                 ItemMeta suicide_meta = suicide.getItemMeta();
                 suicide_meta.setDisplayName(ChatColor.RED + "Close");
@@ -97,7 +108,7 @@ public class FlyCommand implements CommandExecutor {
                 team.setItemMeta(team_meta);
 
                 SkullMeta playerdata_meta = (SkullMeta) Bukkit.getItemFactory().getItemMeta(Material.PLAYER_HEAD);
-                playerdata_meta.setOwningPlayer(p.getPlayer());
+                playerdata_meta.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString(String.valueOf(p.getUniqueId()))));
                 playerdata_meta.setDisplayName(ChatColor.GOLD + p.getPlayerListName());
                 ArrayList<String> playerdata_lore = new ArrayList<>();
                 playerdata_lore.add(ChatColor.YELLOW + "Level: " + ChatColor.WHITE + " " + p.getLevel());
@@ -108,26 +119,27 @@ public class FlyCommand implements CommandExecutor {
                 playerdata.setItemMeta(playerdata_meta);
 
                 ItemStack[] menu_items = {
-                        air, air, air, air, air, air, air, air, air,
-                        air, fly, air, air, spawn, air, air, spectator, air,
-                        air, air, air, air, air, air, air, air, air,
-                        air, vision, air, air, team, air, air, playerdata, air,
-                        air, air, air, air, air, air, air, air, air,
-                        underline, underline, underline, underline, suicide, underline, underline, underline, underline,
-                };
-                gui.setContents(menu_items);
+            air, air, air, air, air, air, air, air, air,
+            air, fly, air, air, spawn, air, air, spectator, air,
+            air, air, air, air, air, air, air, air, air,
+            air, vision, air, air, team, air, air, playerdata, air,
+            air, air, air, air, air, air, air, air, air,
+            underline, underline, underline, underline, suicide, underline, underline, underline, underline,
+    };
+    gui.setContents(menu_items);
 
-                p.openInventory(gui);
+    p.openInventory(gui);
+
             }
             //Jezelf fly geven
             else if (args.length == 1 && args[0].equalsIgnoreCase("fly")) {
                 Player p = (Player) sender;
-                if (p.getAllowFlight() == true && p.getGameMode().equals(GameMode.SURVIVAL)) {
+                if (p.getAllowFlight() == true && !p.getGameMode().equals(GameMode.SPECTATOR)) {
                     p.setAllowFlight(false);
                     p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &cJe bent uit de lucht geschoten!"));
                     //Speler krijgt nausea
                     p.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 200, 1, true));
-                }else if (p.getAllowFlight() == false && p.getGameMode().equals(GameMode.SURVIVAL)){
+                }else if (p.getAllowFlight() == false && !p.getGameMode().equals(GameMode.SPECTATOR)){
                     p.setAllowFlight(true);
                     p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &2Vlieg als een echte vogel!!"));
                     ItemStack fly = new ItemStack(Material.LEATHER);
@@ -146,13 +158,13 @@ public class FlyCommand implements CommandExecutor {
                     return true;
                 }
                 else {
-                    if (target.getAllowFlight() == true && target.getGameMode().equals(GameMode.SURVIVAL)) {
+                    if (target.getAllowFlight() == true && !target.getGameMode().equals(GameMode.SPECTATOR)) {
                         target.setAllowFlight(false);
                         target.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &dJe bent uit de lucht geschoten!"));
                         sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&l&9[MOD] &l&e" + target.getName() + " is uit flymodus gehaald!"));
                         //Speler krijgt nausea
                         target.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 200, 1, true));
-                    } else if (target.getAllowFlight() == false && target.getGameMode().equals(GameMode.SURVIVAL)){
+                    } else if (target.getAllowFlight() == false && !target.getGameMode().equals(GameMode.SPECTATOR)){
                         target.setAllowFlight(true);
                         target.sendMessage(ChatColor.translateAlternateColorCodes('&', "&l&9[MOD] &dVlieg als een echte vogel!!"));
                         sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&l&9[MOD] &l&e" + target.getName() + " is in flymodus gezet.!"));
